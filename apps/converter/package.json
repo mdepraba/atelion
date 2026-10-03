@@ -1,0 +1,48 @@
+{
+  "name": "@app/converter",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@pdf/contracts": "workspace:*"
+  },
+  "nx": {
+    "tags": [
+      "scope:app",
+      "type:app"
+    ],
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "defaultConfiguration": "development",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "cache": true,
+        "options": {
+          "platform": "node",
+          "format": [
+            "esm"
+          ],
+          "outputPath": "apps/converter/dist",
+          "main": "apps/converter/src/main.ts",
+          "tsConfig": "apps/converter/tsconfig.app.json",
+          "assets": [],
+          "bundle": true,
+          "thirdParty": false,
+          "skipTypeCheck": true,
+          "declaration": false,
+          "sourcemap": true
+        },
+        "configurations": {
+          "development": {
+            "minify": false
+          },
+          "production": {
+            "minify": true
+          }
+        }
+      }
+    }
+  }
+}

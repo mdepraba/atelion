@@ -1,0 +1,75 @@
+{
+  "name": "@app/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@core/api": "workspace:*",
+    "@fiscus/api": "workspace:*",
+    "@pdf/api": "workspace:*"
+  },
+  "nx": {
+    "tags": [
+      "scope:app",
+      "type:app"
+    ],
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "defaultConfiguration": "development",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "cache": true,
+        "options": {
+          "platform": "node",
+          "format": [
+            "esm"
+          ],
+          "outputPath": "apps/api/dist",
+          "main": "apps/api/src/main.ts",
+          "tsConfig": "apps/api/tsconfig.app.json",
+          "assets": [],
+          "bundle": true,
+          "thirdParty": false,
+          "skipTypeCheck": true,
+          "declaration": false,
+          "esbuildConfig": "apps/api/esbuild.config.cjs"
+        },
+        "configurations": {
+          "development": {
+            "minify": false
+          },
+          "production": {
+            "minify": true
+          }
+        }
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "nx:run-commands",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "parallel": true,
+          "cwd": "{workspaceRoot}"
+        },
+        "configurations": {
+          "development": {
+            "commands": [
+              "nx run @app/api:build:development --watch",
+              "bun --watch --smol apps/api/dist/main.js"
+            ]
+          },
+          "production": {
+            "commands": [
+              "bun --smol apps/api/dist/main.js"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

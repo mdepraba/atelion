@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  # NFR-22: boundaries, types and tests pass here before every deploy; the
+  # 1 GB host never builds. The deploy job joins this file with deploy/.
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          filter: tree:0
+          # Nx compares against the base commit to decide what is affected.
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # Bun installs and runs the server, but Nx, esbuild and Vitest still spawn
+      # node for their own work, so the runtime has to be on the box.
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+
+      # NFR-23: a single-module change finishes in under 5 minutes because
+      # untouched projects replay from this cache instead of running.
+      - uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('bun.lock') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('bun.lock') }}-
+            nx-${{ runner.os }}-
+
+      - run: bun install --frozen-lockfile
+        env:
+          # Git hooks are for local commits; CI has nothing to commit.
+          HUSKY: 0
+
+      # Sets NX_BASE and NX_HEAD for `nx affected`.
+      - uses: nrwl/nx-set-shas@v4
+
+      # TypeScript project references are generated from the graph, so a stale
+      # commit of them fails here rather than surprising someone locally.
+      - name: Check the workspace is in sync
+        run: bunx nx sync:check
+
+      - name: Check module boundaries
+        run: |
+          bun run boundaries
+          bun run boundaries:test
+
+      # NFR-12: secrets live only in /srv/atelion/.env. The pre-commit hook
+      # blocks them locally; this catches a commit made with --no-verify. It
+      # checks the tree as pushed, not every commit in between.
+      - name: Check for secrets and env files
+        run: |
+          bun run secrets
+          bun run secrets:test
+
+      - name: Lint and format
+        run: bunx biome ci .
+
+      - name: Typecheck, test and build what changed
+        run: bunx nx affected -t typecheck test build

@@ -1,0 +1,80 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": [
+      "default",
+      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/vitest.config.mts",
+      "!{projectRoot}/src/test-setup.[jt]s"
+    ],
+    "sharedGlobals": ["{workspaceRoot}/tsconfig.base.json"]
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/js/typescript",
+      "options": {
+        "typecheck": {
+          "targetName": "typecheck"
+        }
+      }
+    },
+    {
+      "plugin": "./tools/biome/plugin.ts",
+      "options": {
+        "lintTargetName": "lint",
+        "lintFixTargetName": "lint:fix",
+        "lintFixUnsafeTargetName": "lint:fix-unsafe",
+        "formatTargetName": "format",
+        "checkTargetName": "check"
+      }
+    },
+    {
+      "plugin": "@nx/vitest",
+      "options": {
+        "testTargetName": "test",
+        "ciTargetName": "test-ci"
+      }
+    },
+    {
+      "plugin": "@nx/vite/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "devTargetName": "dev",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static"
+      }
+    }
+  ],
+  "targetDefaults": {
+    "build": {
+      "cache": true
+    },
+    "test": {
+      "cache": true
+    }
+  },
+  "generators": {
+    "@nx/js:library": {
+      "bundler": "none",
+      "linter": "none",
+      "unitTestRunner": "vitest"
+    },
+    "@nx/react": {
+      "application": {
+        "bundler": "vite",
+        "linter": "none",
+        "unitTestRunner": "vitest"
+      },
+      "library": {
+        "bundler": "none",
+        "linter": "none",
+        "unitTestRunner": "vitest"
+      }
+    }
+  },
+  "analytics": false,
+  "neverConnectToCloud": true
+}

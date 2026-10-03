@@ -1,0 +1,1 @@
+bun tools/secrets/check-secrets.mjs --staged

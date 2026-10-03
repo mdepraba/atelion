@@ -1,0 +1,63 @@
+{
+  "name": "atelion",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "core/*",
+    "modules/devtools",
+    "modules/fiscus/*",
+    "modules/pdf/*"
+  ],
+  "scripts": {
+    "prepare": "husky || true",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "boundaries": "bun tools/boundaries/check-boundaries.mjs",
+    "boundaries:test": "node --test \"tools/boundaries/*.test.mjs\"",
+    "secrets": "bun tools/secrets/check-secrets.mjs",
+    "secrets:test": "node --test \"tools/secrets/*.test.mjs\"",
+    "typecheck": "nx run-many -t typecheck",
+    "test": "nx run-many -t test",
+    "build": "nx run-many -t build",
+    "dev:api": "nx run @app/api:serve",
+    "dev:web": "nx run @app/web:dev"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@nx/devkit": "23.2.1",
+    "@nx/esbuild": "23.2.1",
+    "@nx/js": "23.2.1",
+    "@nx/vite": "23.2.1",
+    "@nx/vitest": "23.2.1",
+    "@swc-node/register": "^1.12.1",
+    "@swc/core": "^1.16.13",
+    "@types/node": "^24.19.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/coverage-v8": "~4.1.11",
+    "esbuild": "^0.28.2",
+    "husky": "^9.1.7",
+    "jsdom": "^30.1.1",
+    "nx": "23.2.1",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.2",
+    "vitest": "~4.1.11"
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.1.2",
+    "@nestjs/core": "^12.1.2",
+    "@nestjs/platform-fastify": "^12.1.2",
+    "fastify": "^5.12.5",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "trustedDependencies": [
+    "@swc/core"
+  ]
+}

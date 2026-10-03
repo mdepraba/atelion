@@ -1,0 +1,4 @@
+[install]
+# Real directories instead of symlinks into Bun's store: production installs
+# with --linker=hoisted too, and Windows handles symlinked trees poorly.
+linker = "hoisted"

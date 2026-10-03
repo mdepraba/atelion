@@ -1,0 +1,49 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./modules/fiscus/contracts"
+    },
+    {
+      "path": "./modules/fiscus/domain"
+    },
+    {
+      "path": "./modules/pdf/contracts"
+    },
+    {
+      "path": "./modules/fiscus/api"
+    },
+    {
+      "path": "./modules/fiscus/web"
+    },
+    {
+      "path": "./modules/devtools"
+    },
+    {
+      "path": "./modules/pdf/api"
+    },
+    {
+      "path": "./modules/pdf/web"
+    },
+    {
+      "path": "./apps/converter"
+    },
+    {
+      "path": "./apps/api"
+    },
+    {
+      "path": "./apps/web"
+    },
+    {
+      "path": "./core/api"
+    },
+    {
+      "path": "./core/db"
+    },
+    {
+      "path": "./core/ui"
+    }
+  ]
+}

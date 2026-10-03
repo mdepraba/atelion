@@ -1,0 +1,23 @@
+{
+  "name": "@fiscus/web",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.tsx",
+      "default": "./src/index.tsx"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@core/ui": "workspace:*",
+    "@fiscus/contracts": "workspace:*"
+  },
+  "nx": {
+    "tags": [
+      "scope:fiscus",
+      "type:web"
+    ]
+  }
+}
